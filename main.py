@@ -18,10 +18,10 @@ def start_translate():
     while True:
         tmp_text = pyperclip.paste()
         if tmp_text != recent_text:
-            print(tmp_text)
-            recent_text = tmp_text
+            recent_text = tmp_text.replace('\n', ' ')
             result_text = translator.translate(recent_text, dest='zh-tw').text
             label_trans.configure(text=result_text, justify='left', font=("Helvetica",11), wraplength=380) 
+            print(recent_text+", "+result_text)
         time.sleep(0.1)
 
         if stop_event.is_set():
@@ -46,7 +46,7 @@ if __name__ == "__main__":
     frame_top.pack()
     frame_bottom.pack(side=tk.BOTTOM)
 
-    label_trans = tk.Label(window, text='Translation')
+    label_trans = tk.Label(window, text='Press Ctrl+C to select words.')
     btn_start = tk.Button(frame_bottom, text='開始翻譯', command=lambda: thread_it(start_translate))
     btn_stop = tk.Button(frame_bottom, text="停止翻譯", command=lambda: stop_trans())
     btn_stop['state'] = tk.DISABLED
