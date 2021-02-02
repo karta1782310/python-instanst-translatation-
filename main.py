@@ -1,8 +1,9 @@
+import re
 import time
 import threading
 import pyperclip
 import tkinter as tk
-from googletrans import Translator
+from google_trans_new  import google_translator
 
 def thread_it(func, *args):
     t = threading.Thread(target=func, args=args)
@@ -17,9 +18,11 @@ def start_translate():
     recent_text = ""
     while True:
         tmp_text = pyperclip.paste()
+        reReturn = re.compile(r'\r|\n|\r\n') # https://zhuanlan.zhihu.com/p/34004051
+        tmp_text = re.sub(reReturn,'',tmp_text)
         if tmp_text != recent_text:
-            recent_text = tmp_text.replace('\n', ' ')
-            result_text = translator.translate(recent_text, dest='zh-tw').text
+            recent_text = tmp_text
+            result_text = translator.translate(recent_text, lang_src='en', lang_tgt='zh-tw')
             label_trans.configure(text=result_text, justify='left', font=("Helvetica",11), wraplength=380) 
             print(recent_text+", "+result_text)
         time.sleep(0.1)
@@ -33,7 +36,7 @@ def stop_trans():
     btn_stop['state'] = tk.DISABLED
 
 if __name__ == "__main__":
-    translator = Translator()
+    translator = google_translator()
     stop_event = threading.Event()
 
     window = tk.Tk()
@@ -56,7 +59,3 @@ if __name__ == "__main__":
     btn_stop.pack(side=tk.LEFT)
     
     window.mainloop()
-    
-
-    
-    
